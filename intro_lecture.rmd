@@ -1,0 +1,77 @@
+
+```{r load_libraries}
+
+library(tidyverse)
+
+```
+
+
+```{r import_data}
+
+penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv"))
+
+```
+
+
+# Data manipulation
+
+```{r average_weight_for_adelie}
+
+penguin_data %>% 
+  filter(species == "Adelie") %>% 
+  select(body_mass_g) %>% 
+  summarise(average_weight = mean(body_mass_g))
+
+```
+
+
+```{r average_weight_for_each_category}
+
+penguin_data %>% 
+  group_by(species) %>% 
+  select(species, body_mass_g) %>% 
+  summarise(average_weight = mean(body_mass_g)) %>% 
+  arrange(desc(average_weight))
+
+```
+
+
+
+```{r average_weight_for_each_category_in_descending_order}
+
+penguin_data %>% 
+  group_by(species) %>% 
+  select(species, body_mass_g) %>% 
+  summarise(average_weight = mean(body_mass_g)) %>% 
+  arrange(desc(average_weight))
+
+```
+
+
+```{r mutate}
+
+penguin_data %>% 
+  mutate(body_mass_kg = body_mass_g / 1000) %>% 
+  select(-body_mass_g)
+
+```
+
+# Visualization
+
+```{r}
+
+penguin_data %>% 
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm)) + 
+  geom_point()
+
+```
+
+
+```{r}
+
+penguin_data %>% 
+  ggplot(aes(x = body_mass_g, y = bill_depth_mm, color = species)) + 
+  geom_point()
+
+```
+
