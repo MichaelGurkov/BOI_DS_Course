@@ -1,0 +1,46 @@
+
+```{r load_libraries}
+
+library(tidyverse)
+
+library(tidymodels)
+
+```
+
+```{r load_data}
+
+penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv"))
+
+penguin_data = penguin_data %>% 
+  filter(!species == "Adelie") %>% 
+  select(body_mass_g,species) %>% 
+  mutate(species = as_factor(species))
+
+```
+
+```{r fit_linear_reagression}
+
+knn_model_fit = nearest_neighbor(mode = "classification") %>% 
+  fit(species ~ body_mass_g, data = penguin_data)
+
+```
+
+```{r predict}
+
+predictions = knn_model_fit %>% 
+  predict(penguin_data)
+
+```
+
+
+```{r confusion_matrix}
+
+penguin_data %>% 
+  select(species) %>% 
+  bind_cols(predictions) %>% 
+  conf_mat(truth = species, estimate = .pred_class)
+
+
+
+```
+

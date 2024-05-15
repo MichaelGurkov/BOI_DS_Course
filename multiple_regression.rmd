@@ -1,0 +1,62 @@
+
+```{r load_libraries}
+
+library(tidyverse)
+
+library(tidymodels)
+
+```
+
+```{r load_data}
+
+penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv"))
+
+```
+
+```{r fit_linear_regression}
+
+preprocess_recipe = recipe(bill_depth_mm ~ .,
+                    data = penguin_data) %>% 
+  step_dummy(species, one_hot = TRUE) %>% 
+  step_interact(terms = ~starts_with("species"):body_mass_g)
+
+
+preprocess_recipe %>% 
+  prep(penguin_data) %>% 
+  bake(new_data = NULL) %>% 
+  head()
+
+
+model_spec = linear_reg() %>% 
+  set_engine("lm")
+
+
+linear_model_workflow = workflow() %>% 
+  add_recipe(preprocess_recipe) %>% 
+  add_model(model_spec, formula = bill_depth_mm ~ 0 + . -body_mass_g) %>% 
+  fit(penguin_data)
+
+
+```
+
+```{r coefficients}
+
+linear_model_workflow %>% 
+  tidy()
+
+```
+
+```{r predict}
+
+predictions = linear_model_fit %>% 
+  predict(penguin_data)
+
+penguin_data %>% 
+  select(bill_depth_mm, body_mass_g) %>% 
+  bind_cols(predictions) %>% 
+  pivot_longer(-body_mass_g) %>% 
+  ggplot(aes(body_mass_g, y = value, color = name)) + 
+  geom_point()
+
+```
+
