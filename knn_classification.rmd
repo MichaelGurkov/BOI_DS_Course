@@ -18,7 +18,7 @@ penguin_data = penguin_data %>%
 
 ```
 
-```{r fit_linear_reagression}
+```{r fit_classification}
 
 knn_model_fit = nearest_neighbor(mode = "classification") %>% 
   fit(species ~ body_mass_g, data = penguin_data)

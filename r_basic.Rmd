@@ -1,0 +1,419 @@
+
+---
+title: "Introduction to R"
+author: "Dr. Ariel Mantzura"
+date: "19/2/2024"
+output:
+  beamer_presentation:
+    theme: Darmstadt
+    colortheme: orchid
+    fonttheme: serif
+    slide_level: 2
+    includes:
+  slidy_presentation: default
+  ioslides_presentation: default
+subtitle: Data Science Course
+
+---
+
+
+
+
+
+## Topics to be Covered in this Lecture
+
+- Understanding the user interface
+
+- Installing and Loading packages
+
+- Getting help in R
+
+- Basic coding
+
+- Exercises
+
+
+
+## Installing and Loading packages
+
+ - There is a vast amount of functions in R that can be used. 
+ 
+ - Some of these functions are uploaded automatically every time we start working with R.
+ 
+ - We refer to all these functions as \textbf{base R} functions.
+ 
+ - Other functions are packed together into packages.
+ 
+ - Typically, packages include functions that are associated with a similar task type.
+ 
+ - Packages also include different data sets and help files.
+ 
+ - These packages are written by a large community of \textbf{package writers}. 
+ 
+## Installing and Loading packages
+
+ - In order to use an R package you need to install it once on your computer.
+ - Then you need to upload the package for every time you open R, i.e. the current session
+ - Installing a package is with the command: 
+ 
+ 
+   \textbf{\texttt{install.packages("package name")}}
+   
+ - Often a package depends on functions included in other packages called "dependencies".
+ 
+ - These dependencies are installed automatically with the installation of the dependent package.
+   
+ - Uploading the package is with the command:
+ 
+   \textbf{\texttt{library("package name")}}
+
+
+## Installing and Loading packages
+
+ - Multiple packages can be installed in a single command for example:
+ 
+   \textbf{\texttt{install.packages("ggplot2","tidyverse","dplyr")}}
+
+
+## Understanding the user interface
+
+<!-- \includegraphics[width=1\textwidth,height=2.5 in]{interface.jpg} -->
+
+
+## Understanding the user interface
+
+ - The RStudio interface has 4 main panels:
+ 
+ 1. Console
+ 
+ 2. Script editor
+ 
+ 3. Environment/History
+ 
+ 4. Files/Plots/Packages/Help
+
+## Understanding the user interface
+
+ - The \textbf{console window} is the place where R is waiting for you to tell it what to do, and where it will show the results of a command. You can type commands directly into the console, but they will be forgotten when you close the session.
+ 
+ - The \textbf{Rstudio script editor} allows you to ‘send’ the current line or the currently highlighted text to the R console by clicking on the Run button in the upper-right hand corner of the script editor. 
+ - Alternatively, you can run by simply pressing the Ctrl and Enter keys at the same time as a shortcut.
+
+
+## Understanding the user interface
+
+ - \textbf{Environment/History}: \textbf{environment} shows all active objects and history keeps track of all commands run in console
+ 
+ - \textbf{Files/Plots/Packages/Packages/Viewer window} 
+    - \textbf{Files} lists all files in the root directory. The root(default,active) directory appears in the upper bar. 
+    -  \textbf{Plots} shows any plots that you created using R. 
+    -  \textbf{Packages} are a list of packages you may import. 
+     - \textbf{Help} has documentation on different data sets and functions included in installed packages. for example by typing the command \texttt{?sum} you will see a detailed explanation of the function sum. 
+     
+## Getting help in R
+
+ - There are many options for getting help in R.
+ 
+ - \textbf{Help in R}: \texttt{help()} or \texttt{?}: The help() function or the help operator  ? provide access to the documentation pages for R functions, data sets and other objects.
+ - For example to get help on the lm function (for linear models) type help(lm) or alternatively, type ?lm.
+ - To get Access to a package that is not currently uploaded specify also the name of the package.
+ - For example rlm (robust linear models) type:
+   
+   \textbf{\texttt{help(rlm, package="MASS")}}
+ 
+## R help in the internet
+
+ - \textbf{Stack Overflow} is a website for help and discussions about programming.
+ 
+  - From Wikipedia: \textbf{Stack Overflow} is a question and answer website for computer programmers.
+
+<!-- \includegraphics[width=0.8\textwidth,height=2 in]{stack.png} -->
+
+## R help in the internet
+
+<!-- \includegraphics[width=0.8\textwidth,height=2 in]{stack2.jpg} -->
+
+
+# Basic Coding in R 
+
+## Basic Coding - print a string
+
+
+
+\textbf{\texttt{print("string")}} 
+
+```{r pressure, echo=TRUE}
+print("hello world")
+```
+ 
+ 
+
+## Replicate a string or number:
+ 
+  
+\textbf{\texttt{replicate(number of replications,"string")}} 
+  
+```{r pressure1, echo=TRUE}
+replicate(3,"hello world")
+```
+
+## Basic Coding -  Mathematical operators: add, subtract, multiply, divide 
+ 
+  
+```{r pressure2, echo=TRUE}
+5+1
+5-1
+5*1
+5/1
+```
+
+## Mathematical operators: order of operations
+
+- If there are no brackets, conventional order rules are applied
+  
+```{r p3, echo=TRUE}
+(5+1)*(4-1)
+5+1*4-1
+4^2+3
+4^(2+3)  
+```
+## Mathematical operators: order of operations
+
+- n!, n over k and Modulu
+
+  
+```{r pp3, echo=TRUE}
+factorial(3)     # 3!
+choose(5,2)      # 5 over 2
+5%%2             # modulu (remainder ofter devision) 
+```
+
+
+## Other mathematical functions
+
+
+
+```{r p4, echo=TRUE}
+
+sqrt(16);exp(3);log(2,base=exp(1))
+floor(10.5);ceiling(1.5);round(10.3678,2) 
+
+```
+## Basic Coding - Creating an object
+
+- numerical Object
+
+```{r p5, echo=TRUE}
+a=5;b<-numeric()
+print(a);print(b)
+d=c(1,2,3)
+d
+class(d)
+
+```
+
+## Basic Coding - Creating an object
+
+- Character Object
+
+```{r p6, echo=TRUE}
+a=c(3,"hello",2)
+a
+class(a)
+
+```
+
+
+
+
+##  Basic Coding - Creating an object
+
+- Matrix object
+
+```{r p7, echo=TRUE}
+p <- matrix(data = c(1,2,3,4,5,6,7,8,9,10),ncol = 5)
+q <- matrix(data = c("a","b","c","d"),ncol = 2)
+print(p);print(q)
+class(p)
+
+```
+## Basic Coding - Creating an object
+
+- Matrix object
+
+- To acces cell, column or row use square brackets []
+
+```{r p8, echo=TRUE}
+p[1,2]
+p[1,]
+p[,2]
+```
+
+
+## Basic Coding - Creating an object
+
+- Array object
+
+
+```{r p9, echo=TRUE}
+ar=array(1:6,dim=c(2,3,2))
+print(ar)
+```
+## Basic Coding - Creating an object
+
+- Array object
+
+- To acces cell, column, row or entire layer by []
+
+```{r p10, echo=TRUE}
+ar[1,2,1]
+ar[,,1]
+
+```
+## Basic Coding - Creating a List
+
+
+ - If you want to store elements of different types in the same vector, you’ll need a list, which you create with list():
+ 
+```{r p21, echo=TRUE}
+x1 <- list(1:4, "a", TRUE)
+x1
+
+```
+
+## Creating a list
+
+- It is often convenient to name the components, or children, of a list:
+
+```{r p31, echo=TRUE}
+x2 <- list(a = 1:2, b = 1:3, c = 1:4)
+x2
+
+
+```
+
+
+
+
+##  Basic Coding  - Creating a Dataframe
+
+- Data Frames can have different types of data inside it. 
+- While the first column can be character, the second and third can be numeric or logical. 
+- However, each column should have the same type of data.
+
+```{r p11, echo=TRUE}
+df=data.frame(q,p[,1:2])
+df
+class(df)
+```
+
+## Examine dataset
+
+- head(first rows), names of variables and dataset dimension)
+
+```{r p12, echo=TRUE}
+library(MASS)
+head(iris[-3],3)
+names(iris)[1:3]
+dim(iris)
+```
+
+## Dataset Summary
+
+```{r p13, echo=TRUE}
+summary(iris)[1:6,-c(3,4)]
+
+```
+## Binding to datasets by rows or columns
+
+- Column bind
+
+
+```{r p14, echo=TRUE}
+a=matrix(1:6,nrow=3)
+b=matrix(7:12,nrow=3)
+c=cbind(a,b)
+d=rbind(a,b)
+print(c)
+
+```
+
+
+a and b must have same number of rows
+
+## Binding to datasets by rows or columns
+
+- Row bind 
+
+```{r p15, echo=TRUE}
+a=matrix(1:6,nrow=3)
+b=matrix(7:12,nrow=3)
+
+d=rbind(a,b)
+print(d)
+
+```
+
+a,b must have same number of columns
+
+## Logical Operators
+
+
+
+```{r p16, echo=TRUE}
+a=c(1:5)
+b=c(1:3)
+a>3
+a%in%b
+b%in%a
+
+```
+## Logical Operators
+
+
+
+```{r p17, echo=TRUE}
+a=c(1:5)
+a[2]=NA; is.na(a); !is.na(a)
+a>3 | a<5     # or operator
+a>3 & a<5     # and operator
+
+
+```
+## Extracting named columns
+
+- Extracting Sepal.Length column from Iris data
+
+```{r p19, echo=TRUE}
+names(iris)[1:3]
+a=iris$Sepal.Length[1:5]
+print(a)
+```
+
+
+
+
+## Extracting data with condition
+
+- Extract all rows bigger than 3
+
+```{r p18, echo=TRUE}
+
+a=iris[iris$Sepal.Length>7.5,1:3]
+print(a)
+```
+
+
+
+## Exercise
+
+ - Install and download MASS package
+ - Use the command \texttt{data(package="MASS")} to observe all the data sets in the MASS package. 
+ - Define the Boston dataset as an object.
+ - What is the size of the data set?
+ - Plot a summary of the data set.
+ - Create another object that extracts from the original data set only rows that medv is larger than its 3rd quantile. 
+ - Create a vector that gets the value true if tax is smaller than its first quantile.
+ - Create an object that Binds this new variable to the Boston data set.
+- Plot the first 5 rows of binded data set.
+

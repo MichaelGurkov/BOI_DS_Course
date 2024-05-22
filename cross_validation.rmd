@@ -1,0 +1,38 @@
+
+```{r load_libraries}
+
+library(tidyverse)
+
+library(tidymodels)
+
+```
+
+```{r load_data}
+
+penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv"))
+
+```
+
+```{r fit_resamples_linear_reg}
+
+cv_spec = vfold_cv(penguin_data,v = 10)
+
+preprocess_spec = recipe(bill_depth_mm ~ body_mass_g,
+                         data = penguin_data)
+
+model_spec = linear_reg()
+
+linear_model_wf = workflow() %>% 
+  add_recipe(preprocess_spec) %>% 
+  add_model(model_spec) %>% 
+  fit_resamples(cv_spec)
+
+```
+
+```{r metrics}
+
+linear_model_wf %>% 
+  collect_metrics()
+
+```
+

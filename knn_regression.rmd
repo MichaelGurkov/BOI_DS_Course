@@ -1,4 +1,6 @@
 
+
+
 ```{r load_libraries}
 
 library(tidyverse)
@@ -17,10 +19,12 @@ penguin_data = penguin_data %>%
 
 ```
 
-```{r fit_linear_reagression}
+```{r fit_knn_regression}
 
-knn_model_fit = nearest_neighbor(mode = "regression",
-                                 neighbors = nrow(penguin_data)) %>% 
+knn_model_fit = nearest_neighbor(
+  mode = "regression",
+  neighbors = 100
+  ) %>%
   fit(bill_depth_mm ~ body_mass_g, data = penguin_data)
 
 ```

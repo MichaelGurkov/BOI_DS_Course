@@ -13,7 +13,8 @@ penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv"))
 
 ```
 
-```{r fit_linear_reagression}
+
+```{r fit_linear_regression}
 
 linear_model_fit = linear_reg() %>% 
   fit(bill_depth_mm ~ body_mass_g, data = penguin_data)
@@ -23,8 +24,7 @@ linear_model_fit = linear_reg() %>%
 ```{r coefficients}
 
 linear_model_fit %>% 
-  extract_fit_engine() %>% 
-  coefficients()
+  tidy()
 
 ```
 
