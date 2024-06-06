@@ -15,15 +15,25 @@ library(rpart.plot)
 
 penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv"))
 
-penguin_data = penguin_data
 
 ```
+
+```{r plot_data}
+
+penguin_data %>% 
+  ggplot(aes(body_mass_g, bill_depth_mm)) + 
+  # geom_point(aes(color = species)) + 
+  geom_point() + 
+  NULL
+
+```
+
 
 ```{r fit_tree_regression}
 
 tree_model_fit = decision_tree(
   cost_complexity = 0,
-  tree_depth = 3,
+  tree_depth = 1,
   mode = "regression",
   engine = "rpart",
   min_n = 5

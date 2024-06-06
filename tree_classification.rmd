@@ -1,0 +1,87 @@
+
+
+
+```{r load_libraries}
+
+library(tidyverse)
+
+library(tidymodels)
+
+library(rpart.plot)
+
+```
+
+```{r load_data}
+
+penguin_data = read_csv(here::here("data", "palmer_penguins_data.csv")) %>% 
+  filter(!species == "Chinstrap") %>% 
+  mutate(species = as.factor(species))
+
+
+
+```
+
+```{r plot_data}
+
+penguin_data %>% 
+  ggplot(aes(body_mass_g, bill_depth_mm)) + 
+  # geom_point(aes(color = species)) + 
+  geom_point() + 
+  NULL
+
+```
+
+
+```{r fit_tree_classification}
+
+tree_model_fit = decision_tree(
+  cost_complexity = 0,
+  tree_depth = 1,
+  mode = "classification",
+  engine = "rpart",
+  min_n = 5
+) %>%
+  fit(species~ bill_depth_mm + body_mass_g, data = penguin_data)
+
+```
+
+```{r predict}
+
+predictions = tree_model_fit %>% 
+  predict(penguin_data)
+
+penguin_data %>% 
+  bind_cols(predictions) %>% 
+  ggplot(aes(body_mass_g,bill_depth_mm, color = species)) + 
+  geom_point(aes(shape = .pred_class), size = 3)
+
+```
+
+```{r plot_tree}
+
+tree_model_fit %>% 
+  extract_fit_engine() %>% 
+  rpart.plot(roundint = FALSE)
+
+```
+
+```{r plot_decision_region}
+
+splits = tree_model_fit %>% 
+  extract_fit_engine() %>% 
+  pluck("splits") %>%
+  as.data.frame() %>% 
+  rownames_to_column(var = "feature") %>%
+  slice(1:2) %>% 
+  select(feature, value = index)
+
+penguin_data %>% 
+  ggplot(aes(body_mass_g, bill_depth_mm)) + 
+  # geom_rect(xmin = -Inf, xmax = Inf, ymax = Inf, ymin = 16.45,
+  #           fill = "#F8766D", alpha = 0.1) + 
+  geom_point(aes(color = species)) +
+  geom_hline(yintercept = splits[1,2])
+
+
+```
+

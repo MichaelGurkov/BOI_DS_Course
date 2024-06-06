@@ -1,0 +1,158 @@
+
+
+```{r load_libraries}
+
+library(tidyverse)
+
+library(mvtnorm)
+
+library(tidymodels)
+
+```
+
+
+```{r params}
+
+params = list()
+
+params$class_a_means = list(c(4,2), c(4,8),c(6,10))
+
+params$class_b_means = c(6,2)
+
+params$sigma = diag(2)
+
+params$obs_num = 200
+
+```
+
+```{r functions}
+
+get_bayes_classification = function(x,y){
+  
+  obs_value = c(x,y)
+  
+  class_a_prob = map_dbl(params$class_a_means,
+      ~dmvnorm(x = obs_value,mean = ., sigma = params$sigma)) %>% 
+    mean()
+  
+  class_b_prob = dmvnorm(x = obs_value,mean = params$class_b_means, sigma = params$sigma)
+  
+  class = if_else(class_a_prob >= class_b_prob, "A", "B")
+  
+  return(class)
+  
+}
+
+```
+
+```{r simulate_two_groups}
+
+sampled_means = sample(
+  params$class_a_means,
+  size = params$obs_num,
+  replace = TRUE,
+  prob = rep(
+    1 / length(params$class_a_means),
+    length(params$class_a_means)
+  )
+)
+
+train_data = map(sampled_means, ~ as.data.frame(rmvnorm(
+  n = 1,
+  mean = .,
+  sigma = params$sigma
+))) %>%
+  list_rbind() %>%
+  mutate(class = "A") %>%
+  bind_rows(
+    rmvnorm(n = params$obs_num, params$class_b_means, params$sigma) %>%
+      as.data.frame() %>%
+      mutate(class = "B")
+  ) %>%
+  set_names(c("x", "y", "class"))
+
+rm (sampled_means)
+
+test_data = tibble(x = seq(min(train_data$x), max(train_data$x), length.out = 50),
+                   y = seq(min(train_data$y), max(train_data$y), length.out = 50)) %>% 
+  expand.grid()
+
+
+
+```
+
+```{r plot_data}
+
+train_data %>% 
+  ggplot(aes(x,y,color = class)) + 
+  geom_point() + 
+  theme(legend.title = element_blank())
+
+```
+
+
+# Bayes
+
+```{r bayes_classification}
+
+bayes_class = test_data %>% 
+  mutate(class = map2_chr(x,y, get_bayes_classification))
+
+```
+
+```{r plot_bayes}
+
+ggplot() + 
+  geom_point(data = train_data,aes(x = x,y = y, color = class)) +
+  geom_point(data = bayes_class,aes(x = x,y = y, color = class), alpha = 0.5)
+  
+
+```
+
+# KNN
+
+```{r knn_classification}
+
+preproc = recipe(class ~ x + y, data = train_data) 
+
+
+knn_class = map(c(1,10,100), function(temp_k){
+  
+  knn_spec = nearest_neighbor(neighbors = temp_k,
+                            mode = "classification", engine = "kknn")
+
+  knn_wf = workflow() %>%
+    add_recipe(preproc) %>% 
+    add_model(knn_spec) %>% 
+    fit(train_data)
+  
+  pred = knn_wf %>% 
+    predict(test_data) %>% 
+    rename(!!sym(as.character(temp_k)) := 1)
+  
+  return(pred)
+
+  
+}) %>% 
+  list_cbind()
+
+
+knn_class = test_data %>% 
+  bind_cols(knn_class)
+
+
+
+```
+
+```{r plot_knn}
+
+ggplot() + 
+  geom_point(data = knn_class %>% 
+               pivot_longer(-c(x,y),
+                            names_to = "k",
+                            values_to = "class"),
+             aes(x = x,y = y, color = class), alpha = 0.5) + 
+  geom_point(data = train_data,aes(x = x,y = y, color = class)) +
+  facet_wrap(~k)
+```
+
